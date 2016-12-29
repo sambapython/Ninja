@@ -1,8 +1,15 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, session, redirect, url_for
 import pandas as pd
 import pdb
 import db_operations
 app = Flask(__name__,template_folder='own_templates',)
+
+def check_signin():
+	user = session.get('user')
+	if user:
+		return user
+	return False
+
 
 @app.route('/reg', methods=['GET','POST'])
 def reg():
@@ -13,10 +20,25 @@ def reg():
 		message = ret_value
 
 	return render_template('reg.html',message=message)
-@app.route('/contact')
+
+
+@app.route('/contact',methods=['GET','POST'])
 def contact():
-	user = request.cookies.get('user')
-	return render_template('contact.html',user = user)
+	#user = request.cookies.get('user')
+	user = check_signin()
+	if user:
+		return render_template('contact.html',user = user)
+	else:
+		#return render_template('signin.html')
+		#return redirect('/login')
+		url = url_for('signin')
+		print "url=",url
+		return redirect(url)
+
+@app.route('/logout')
+def signout():
+	session.pop('user')
+	return render_template('signin.html',message="logout successfully")
 
 @app.route('/login', methods=['GET','POST'])
 def signin():
@@ -25,10 +47,15 @@ def signin():
 		username = request.form.get('name')
 		password = request.form.get('password')
 		user = db_operations.check_user(username, password)
+
 		if user:
+			'''
 			resp_obj = make_response(render_template('home.html', message="Signin succesfully"))
 			resp_obj.set_cookie('user',username)
 			return resp_obj
+			'''
+			session['user'] = user
+			return render_template('home.html', message="Signin succesfully")
 		else:
 			message="sigin failed"
 
@@ -55,5 +82,6 @@ def index():
 
 
 if __name__ == "__main__":
+	app.secret_key = "some string"
 	app.run(port=8889,debug=True)
 
