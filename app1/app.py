@@ -3,13 +3,34 @@ import pandas as pd
 import pdb
 import db_operations
 app = Flask(__name__,template_folder='own_templates',)
-
+'''
 def check_signin():
 	user = session.get('user')
 	if user:
 		return user
 	return False
+'''
+# decorator to check the user loged in or not.
+'''
+@app.errorhandler(404)
+def page_not_found(err):
+	return render_template('404.html',error=err)
+	'''
 
+@app.errorhandler(501)
+def error_501(err):
+	return render_template('501.html',error=err)
+
+
+
+def login_user(fun):
+	def inner():
+		user = session.get('user')
+		if not user:
+			url = url_for('signin')
+			return redirect(url)
+		return fun()
+	return inner
 
 @app.route('/reg', methods=['GET','POST'])
 def reg():
@@ -23,17 +44,22 @@ def reg():
 
 
 @app.route('/contact',methods=['GET','POST'])
+@login_user
 def contact():
+	'''
 	#user = request.cookies.get('user')
-	user = check_signin()
-	if user:
-		return render_template('contact.html',user = user)
+	user = session.get('user')
+	'''
+	user = session.get('user')
+	return render_template('contact.html',user = user)
+	'''
 	else:
 		#return render_template('signin.html')
 		#return redirect('/login')
 		url = url_for('signin')
 		print "url=",url
 		return redirect(url)
+	'''
 
 @app.route('/logout')
 def signout():
