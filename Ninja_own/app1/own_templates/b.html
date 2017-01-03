@@ -1,0 +1,15 @@
+<html>
+<head>
+	<title>This is the Flask</title>
+</head>
+<body>
+<h1>person names</h1>
+<p>{{person_names}}</p>
+<table border="2">
+{% for person in person_names%}
+<tr><td>{{person}}</td></tr>
+{% endfor %}
+</table>
+<h1>Average Salary:{{sal_avg}}</h1>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+	<div class="container">
+
+		<table>
+		<tr><th>Persons info</th></tr>
+		{% for name in names %}
+			<tr><td><a href="{{ url_for('persons',name=name)}}">{{ name }}</a></td></tr>
+		{% endfor %}
+	</table>
+	</div>
+{% endblock %}
