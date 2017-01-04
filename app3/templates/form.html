@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{%block body%}
+<div class="container">
+<div class="row">
+	<form method="POST" enctype="multipart/form-data">
+	<input type="file" name="image"/>
+	<input type="submit" value="Upload" />
+</form>
+
+</div>
+<p><h1>images uploaded</h1></p>
+{% for image in file_paths%}
+<p>{{ image }}</p>
+
+{% endfor%}
+
+{% for image in file_paths%}
+<p><img src="{{ image }}" width=100, height="100" /></p>
+
+{% endfor%}
+
+</div>
+
+
+{% endblock %}
